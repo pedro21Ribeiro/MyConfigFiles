@@ -1,7 +1,5 @@
 --local lsp = require("lsp-zero")
 --
---lsp.preset('recommended')
---lsp.setup()
 --
 --lsp.ensure_installed {
 --	'tssserver',
@@ -34,6 +32,8 @@ lsp_zero.extend_lspconfig({
 	lsp_attach = lsp_attach,
 	capabilities = require('cmp_nvim_lsp').default_capabilities(),
 })
+
+lsp_zero.setup()
 
 -- These are just examples. Replace them with the language
 -- servers you have installed in your system
