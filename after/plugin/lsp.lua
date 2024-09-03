@@ -54,28 +54,34 @@ require('mason-lspconfig').setup({
 ---
 -- Autocompletion setup
 ---
+
 local cmp = require('cmp')
 local cmp_action = require('lsp-zero').cmp_action()
+local cmp_format = require('lsp-zero').cmp_format({details = true})
+
+require('luasnip.loaders.from_vscode').lazy_load()
 
 cmp.setup({
-	preselect = 'item',
-	completion = {
-		completeopt = 'menu,menuone,noinsert',
-		autocomplete = false
-	},
-	sources = {
-		{name = 'nvim_lsp'},
-	},
-	snippet = {
-		expand = function(args)
-			-- You need Neovim v0.10 to use vim.snippet
-			vim.snippet.expand(args.body)
-		end,
-	},
-	mapping = cmp.mapping.preset.insert({
-		['<CR>'] = cmp.mapping.confirm({select = true}),
-		['<C-Space>'] = cmp.mapping.complete(),
-		['<Tab>'] = cmp_action.tab_complete(),
-		['<S-Tab>'] = cmp.mapping.select_prev_item({behavior = 'select'}),
-	}),
+  sources = {
+    {name = 'nvim_lsp'},
+    {name = 'luasnip'},
+  },
+  mapping = cmp.mapping.preset.insert({
+    ['<C-f>'] = cmp_action.luasnip_jump_forward(),
+    ['<C-b>'] = cmp_action.luasnip_jump_backward(),
+    ['<Tab>'] = cmp_action.tab_complete(),
+    ['<S-Tab>'] = cmp.mapping.select_prev_item({behavior = 'select'}),
+    ['<CR>'] = cmp.mapping.confirm({select = true}),
+  }),
+  snippet = {
+    expand = function(args)
+      require('luasnip').lsp_expand(args.body)
+    end,
+  },
+  window = {
+    completion = cmp.config.window.bordered(),
+    documentation = cmp.config.window.bordered(),
+  },
+  --- (Optional) Show source name in completion menu
+  formatting = cmp_format,
 })
